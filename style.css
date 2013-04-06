@@ -1,0 +1,8 @@
+body {
+	font-family: Arial;
+}
+
+input, select, textarea {
+	padding: 4px;
+	border-radius:  2px;
+}

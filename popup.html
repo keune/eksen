@@ -1,21 +1,32 @@
 <!doctype html>
 <html>
 <head>
+<meta charset='utf-8'>
 <title>Eksen</title>
 <link rel="stylesheet" type="text/css" href="style.css">
 <style type="text/css">
-#ifr {
-	width: 0;
-	height: 0;
-}
+	body {
+		width: 300px;
+		height: 200px;
+	}
+	#btn-play {
+		background-image: url(img/pause.png);
+		background-size: 64px 64px;
+		width: 64px;
+		height: 64px;
+		border: 1px solid #eee;
+		cursor: pointer;
+	}
+	#btn-play.yes {
+		background-image: url(img/play.png);
+	}
 </style>
 <script type="text/javascript" src="jquery-1.9.1.min.js"></script>
-<script type="text/javascript" src="popup.js"></script>
+
+<script src="popup.js"></script>
 </head>
 <body>
-
-<iframe id="ifr"></iframe>
-<button id="btn-stop"></button>
-<button id="btn-play">Çal</button>
+<button id="btn-play"></button>
+<input id="inp-volume" type="range" max="100" min="0" step="1" /> 
 </body>
 </html>

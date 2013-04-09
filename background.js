@@ -1,10 +1,18 @@
 var keuneksen = {
+	isPlaying: 'no',
 	elCss: '#player',
+	nowPlaying: {
+		url: 'http://www.radioeksen.com/calan-sarki.php',
+		defaultMessages: ['RADYO EKSEN -', 'REKLAM'],
+		interval: 5000
+	},
 	stream: {
 		title: "Radyo Eksen",
 		m4a: "http://eksenwmp.radyotvonline.com:80/;"
 	}
 };
+
+chrome.browserAction.setIcon({path: 'img/icon.png'});
 
 $(function() {
 	var $el = $(keuneksen.elCss),
@@ -38,19 +46,19 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	} else {
 		data = {};
 	}
-	if(msg.type == 'set') {
+	if (msg.type == 'set') {
 		if(msg.volume) {
 	    	keuneksen.el.jPlayer('volume', (msg.volume / 100));
 	    	data.volume = msg.volume;
 	    }
-	    if(msg.isPlaying) {
-	    	if(msg.isPlaying === 'yes') {
+	    if (msg.isPlaying) {
+	    	if (msg.isPlaying === 'yes') {
 	    		keuneksen.el.jPlayer('play');
-	    		data.isPlaying = 'yes';
+	    		keuneksen.isPlaying = 'yes';
 	    		chrome.browserAction.setIcon({path: 'img/icon-play.png'});
 	    	} else {
 	    		keuneksen.el.jPlayer('stop');
-	    		data.isPlaying = 'no';
+	    		keuneksen.isPlaying = 'no';
 	    		chrome.browserAction.setIcon({path: 'img/icon.png'});
 	    	}
 	    }
@@ -64,14 +72,17 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 });
 
 setInterval(function() {
-	var addr = 'http://www.radioeksen.com/calan-sarki.php';
-	var defaultMsg = 't';
-	$.ajax(addr, {
+	$.ajax(keuneksen.nowPlaying.url, {
+		timeout: keuneksen.nowPlaying.interval,
 		success: function(response) {
-			if (response != defaultMsg) {
-				console.log(response);
-				chrome.browserAction.setTitle({title: response});
+			if ($.inArray($.trim(response), keuneksen.nowPlaying.defaultMessages) === -1) {
+				chrome.extension.sendMessage({nowPlaying: response}, function() {});
+				chrome.browserAction.getTitle({}, function(currentTitle) {
+					if(currentTitle != response) {
+						chrome.browserAction.setTitle({title: response});
+					}
+				});
 			}
 		}
 	});
-}, 4000);
+}, keuneksen.nowPlaying.interval);

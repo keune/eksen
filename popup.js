@@ -1,13 +1,16 @@
-var popup = {};
+var popup = {
+	bg: chrome.extension.getBackgroundPage()
+};
 
 $(function() {
 	popup.$playBtn = $('#btn-play');
 	popup.$volumeInp = $('#inp-volume');
+	popup.$nowPlaying = $('#now-playing');
 
+	if (popup.bg.keuneksen.isPlaying) {
+		popup.$playBtn.attr('class', popup.bg.keuneksen.isPlaying);
+	}
 	sendMessage({type: 'query'}, function(response) {
-		if (response.isPlaying) {
-			popup.$playBtn.data('isPlaying', response.isPlaying).attr('class', response.isPlaying);
-		}
 		if (response.volume) {
 			popup.$volumeInp.val(response.volume);
 		}
@@ -26,12 +29,12 @@ function bindEvents() {
 	popup.$playBtn.click(function() {
 		var $el = $(this);
 		var msg = {type: 'set'};
-		if ($el.data('isPlaying') == 'yes') {
+		if (popup.bg.keuneksen.isPlaying == 'yes') {
+			$el.attr('class', '');
 			msg.isPlaying = 'no';
-			$el.data('isPlaying', 'no').attr('class', 'yes');
 		} else {
+			$el.attr('class', 'yes');
 			msg.isPlaying = 'yes';
-			$el.data('isPlaying', 'yes').attr('class', '');
 		}
 		sendMessage(msg);
 	});
@@ -42,3 +45,22 @@ function bindEvents() {
 		sendMessage(msg);
 	});
 }
+
+function setNowPlaying(txt) {
+	var fontSize;
+	if (txt.length > 40) {
+		fontSize = '11px';
+	} else {
+		fontSize = '13px';
+	}
+	popup.$nowPlaying
+		.text(txt)
+		attr('title', txt)
+		css('font-size', '11px');
+}
+
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+	if (request.nowPlaying) {
+		setNowPlaying(request.nowPlaying);
+	}
+});

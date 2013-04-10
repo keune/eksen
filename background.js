@@ -46,8 +46,8 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	} else {
 		data = {};
 	}
-	if (msg.type == 'set') {
-		if(msg.volume) {
+	if (msg.type === 'set') {
+		if (msg.volume) {
 	    	keuneksen.el.jPlayer('volume', (msg.volume / 100));
 	    	data.volume = msg.volume;
 	    }
@@ -65,24 +65,26 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	    data = JSON.stringify(data);
 	    localStorage.setItem('keuneksen', data);
 	    return true;
-	} else if (msg.type == 'query') {
+	} else if (msg.type === 'query') {
 		sendResponse(data);
 		return true;
 	}
 });
 
 setInterval(function() {
-	$.ajax(keuneksen.nowPlaying.url, {
-		timeout: keuneksen.nowPlaying.interval,
-		success: function(response) {
-			if ($.inArray($.trim(response), keuneksen.nowPlaying.defaultMessages) === -1) {
-				chrome.extension.sendMessage({nowPlaying: response}, function() {});
-				chrome.browserAction.getTitle({}, function(currentTitle) {
-					if(currentTitle != response) {
-						chrome.browserAction.setTitle({title: response});
-					}
-				});
+	if (keuneksen.isPlaying === 'yes') {
+		$.ajax(keuneksen.nowPlaying.url, {
+			timeout: keuneksen.nowPlaying.interval,
+			success: function(response) {
+				if ($.inArray($.trim(response), keuneksen.nowPlaying.defaultMessages) === -1) {
+					chrome.extension.sendMessage({nowPlaying: response}, function() {});
+					chrome.browserAction.getTitle({}, function(currentTitle) {
+						if (currentTitle !== response) {
+							chrome.browserAction.setTitle({title: response});
+						}
+					});
+				}
 			}
-		}
-	});
+		});
+	}
 }, keuneksen.nowPlaying.interval);

@@ -55,8 +55,8 @@ function setNowPlaying(txt) {
 	}
 	popup.$nowPlaying
 		.text(txt)
-		attr('title', txt)
-		css('font-size', '11px');
+		.attr('title', txt)
+		.css('font-size', fontSize);
 }
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {

@@ -5,7 +5,9 @@
   "description": "Radyo Eksen Dinle.",
   "version": "1.0",
   "icons": {
-    "128": "img/eksen.png"
+    "16": "img/eksen-16.png",
+    "48": "img/eksen-48.png",
+    "128": "img/eksen-128.png"
   },
 
   "permissions": [

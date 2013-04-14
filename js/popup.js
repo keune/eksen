@@ -29,7 +29,7 @@ function bindEvents() {
 	popup.$playBtn.click(function() {
 		var $el = $(this);
 		var msg = {type: 'set'};
-		if (popup.bg.keuneksen.isPlaying == 'yes') {
+		if (popup.bg.keuneksen.isPlaying === 'yes') {
 			$el.attr('class', '');
 			msg.isPlaying = 'no';
 		} else {
@@ -53,8 +53,9 @@ function setNowPlaying(txt) {
 	} else {
 		fontSize = '13px';
 	}
+	fontSize = '13px';
 	popup.$nowPlaying
-		.text(txt)
+		.text('Stairway to Heaven - Led Zeppelin')
 		.attr('title', txt)
 		.css('font-size', fontSize);
 }

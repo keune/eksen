@@ -12,7 +12,7 @@ var keuneksen = {
 	}
 };
 
-chrome.browserAction.setIcon({path: 'img/icon.png'});
+chrome.browserAction.setIcon({path: '../icon.png'});
 
 $(function() {
 	var $el = $(keuneksen.elCss),
@@ -29,10 +29,10 @@ $(function() {
 		},
 		error: function(event) {
 			if(ready && event.jPlayer.error.type === $.jPlayer.error.URL_NOT_SET) {
-				$el.jPlayer("setMedia", keuneksen.stream).jPlayer("play");
+				$el.jPlayer('setMedia', keuneksen.stream).jPlayer('play');
 			}
 		},
-		swfPath: "../eksen/",
+		swfPath: "js/lib/",
 		supplied: "m4a",
 		preload: "none",
 		wmode: "window"
@@ -55,11 +55,11 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	    	if (msg.isPlaying === 'yes') {
 	    		keuneksen.el.jPlayer('play');
 	    		keuneksen.isPlaying = 'yes';
-	    		chrome.browserAction.setIcon({path: 'img/icon-play.png'});
+	    		chrome.browserAction.setIcon({path: '../icon-play.png'});
 	    	} else {
 	    		keuneksen.el.jPlayer('stop');
 	    		keuneksen.isPlaying = 'no';
-	    		chrome.browserAction.setIcon({path: 'img/icon.png'});
+	    		chrome.browserAction.setIcon({path: '../icon.png'});
 	    	}
 	    }
 	    data = JSON.stringify(data);
@@ -77,7 +77,9 @@ setInterval(function() {
 			timeout: keuneksen.nowPlaying.interval,
 			success: function(response) {
 				if ($.inArray($.trim(response), keuneksen.nowPlaying.defaultMessages) === -1) {
-					chrome.extension.sendMessage({nowPlaying: response}, function() {});
+					if (chrome.extension.getViews({type: 'popup'}).length) {
+						chrome.extension.sendMessage({nowPlaying: response}, function() {});
+					}
 					chrome.browserAction.getTitle({}, function(currentTitle) {
 						if (currentTitle !== response) {
 							chrome.browserAction.setTitle({title: response});
@@ -86,5 +88,7 @@ setInterval(function() {
 				}
 			}
 		});
+	} else {
+		chrome.browserAction.setTitle({title: ''});
 	}
 }, keuneksen.nowPlaying.interval);

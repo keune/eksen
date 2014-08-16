@@ -8,6 +8,7 @@ $(function() {
 	popup.$nowPlaying = $('#now-playing');
 
 	if (popup.bg.keuneksen.isPlaying) {
+		popup.bg.keuneksen.setTexts();
 		popup.$playBtn.attr('class', popup.bg.keuneksen.isPlaying);
 	}
 	sendMessage({type: 'query'}, function(response) {
@@ -53,9 +54,8 @@ function setNowPlaying(txt) {
 	} else {
 		fontSize = '13px';
 	}
-	fontSize = '13px';
 	popup.$nowPlaying
-		.text('Stairway to Heaven - Led Zeppelin')
+		.text(txt)
 		.attr('title', txt)
 		.css('font-size', fontSize);
 }

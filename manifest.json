@@ -2,8 +2,9 @@
   "manifest_version": 2,
 
   "name": "Radyo Eksen",
-  "description": "Başka bir program ya da yeni bir sekme açmadan Radyo Eksen dinle.",
-  "version": "1.0.0",
+  "short_name": "Radyo Eksen",
+  "description": "Başka bir program ya da yeni bir sekme açmadan tek tıkla Radyo Eksen dinle.",
+  "version": "1.0.4",
   "icons": {
     "16": "icon_16.png",
     "48": "icon_48.png",
@@ -11,7 +12,7 @@
     "128": "icon_128.png"
   },
   "permissions": [
-    "http://www.radioeksen.com/"
+    "http://*.radioeksen.com/"
   ],
   "browser_action": {
     "default_icon": "icon.png",

@@ -42,6 +42,7 @@ body {
 	border: 1px solid #ddd;
 	border-radius: 2px;
 	box-shadow: 0 0 8px #000;
+	outline: none;
 }
 
 input[type="range"]::-webkit-slider-thumb {
@@ -62,5 +63,5 @@ input[type="range"]::-webkit-slider-thumb {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	-webkit-user-select: text;
-	text-shadow: 0 0 8px #000; 
+	text-shadow: 0 0 8px #000;
 }

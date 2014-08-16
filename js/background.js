@@ -1,9 +1,10 @@
 var keuneksen = {
 	isPlaying: 'no',
 	elCss: '#player',
+	startupVolume: 70,
 	nowPlaying: {
-		url: 'http://www.radioeksen.com/calan-sarki.php',
-		defaultMessages: ['RADYO EKSEN -', 'REKLAM'],
+		url: 'http://live.radioeksen.com/live/nowplaying/RadioEksen',
+		defaultMessages: ['RADYO EKSEN -', 'REKLAM', 'REKLAM-REKLAM'],
 		interval: 5000
 	},
 	stream: {
@@ -39,22 +40,35 @@ $(function() {
 	});
 });
 
+function capitalizeFirst(str) {
+	return str.replace(/\b-\b/g, ' - ').replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
 chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	var data = localStorage.getItem('keuneksen');
 	if (data) {
 		data = JSON.parse(data);
 	} else {
-		data = {};
+		data = {
+			volume: keuneksen.startupVolume
+		};
 	}
 	if (msg.type === 'set') {
 		if (msg.volume) {
 	    	keuneksen.el.jPlayer('volume', (msg.volume / 100));
 	    	data.volume = msg.volume;
+	    } else {
+	    	var startupVolume = keuneksen.startupVolume;
+	    	if(data.volume) {
+	    		startupVolume = data.volume;
+	    	}
+	    	keuneksen.el.jPlayer('volume', (startupVolume / 100));
 	    }
 	    if (msg.isPlaying) {
 	    	if (msg.isPlaying === 'yes') {
 	    		keuneksen.el.jPlayer('play');
 	    		keuneksen.isPlaying = 'yes';
+	    		keuneksen.setTexts();
 	    		chrome.browserAction.setIcon({path: '../icon-play.png'});
 	    	} else {
 	    		keuneksen.el.jPlayer('stop');
@@ -71,18 +85,23 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
 	}
 });
 
-setInterval(function() {
+(function setTexts() {
+	clearTimeout(keuneksen.scheduledExecution);
 	if (keuneksen.isPlaying === 'yes') {
 		$.ajax(keuneksen.nowPlaying.url, {
 			timeout: keuneksen.nowPlaying.interval,
 			success: function(response) {
-				if ($.inArray($.trim(response), keuneksen.nowPlaying.defaultMessages) === -1) {
+				if ($.inArray(response.trim(), keuneksen.nowPlaying.defaultMessages) === -1) {
+					var html = $('<div></div>').html(response);
+					html.find('span, br').remove();
+					var txt = capitalizeFirst(html.text().trim());
+					txt = txt.replace(/ -$/, '')
 					if (chrome.extension.getViews({type: 'popup'}).length) {
-						chrome.extension.sendMessage({nowPlaying: response}, function() {});
+						chrome.extension.sendMessage({nowPlaying: txt}, function() {});
 					}
 					chrome.browserAction.getTitle({}, function(currentTitle) {
-						if (currentTitle !== response) {
-							chrome.browserAction.setTitle({title: response});
+						if (currentTitle !== txt) {
+							chrome.browserAction.setTitle({title: txt});
 						}
 					});
 				}
@@ -91,4 +110,6 @@ setInterval(function() {
 	} else {
 		chrome.browserAction.setTitle({title: ''});
 	}
-}, keuneksen.nowPlaying.interval);
+	keuneksen.setTexts = setTexts;
+	keuneksen.scheduledExecution = setTimeout(setTexts, keuneksen.nowPlaying.interval);
+})();

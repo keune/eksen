@@ -6,7 +6,7 @@ body {
 	background-size: 275px;
 	padding: 0;
 	margin: 0;
-	-webkit-user-select: none;
+	user-select: none;
 }
 #controls {
 	background: rgba(43, 43, 43, 0.70);
@@ -44,7 +44,6 @@ body {
 	box-shadow: 0 0 8px #000;
 	outline: none;
 }
-
 input[type="range"]::-webkit-slider-thumb {
 	-webkit-appearance: none;
 	width: 18px;
@@ -62,6 +61,6 @@ input[type="range"]::-webkit-slider-thumb {
 	overflow:hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	-webkit-user-select: text;
+	user-select: text;
 	text-shadow: 0 0 8px #000;
 }

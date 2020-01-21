@@ -12,6 +12,7 @@
     "128": "icon_128.png"
   },
   "permissions": [
+    "http://radioeksen.com/",
     "https://radioeksen.com/",
     "https://*.radioeksen.com/"
   ],

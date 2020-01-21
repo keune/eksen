@@ -3,7 +3,7 @@ var keuneksen = {
     elCss: '#player',
     startupVolume: 70,
     nowPlaying: {
-        url: 'https://radioeksen.com/Json/GetCurrentSong',
+        url: 'http://radioeksen.com/umbraco/surface/Player/EksenPlayerSong',
         defaultMessages: ['RADYO EKSEN -', 'REKLAM', 'REKLAM-REKLAM'],
         interval: 4000
     },
@@ -91,10 +91,10 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
         timeout: keuneksen.nowPlaying.interval,
         dataType: 'json',
         success: function(response) {
-            if(response && response.Artist && response.TrackName && response.Artist !== 'Radio Eksen') {
-                var artist = response.Artist;
+            if(response && response.NowPlayingArtist && response.NowPlayingTrack && response.NowPlayingArtist !== 'Radio Eksen') {
+                var artist = response.NowPlayingArtist;
                 artist = capitalizeFirst(artist.trim());
-                var track = response.TrackName;
+                var track = response.NowPlayingTrack;
                 track = capitalizeFirst(track.trim());
                 var txt = artist + ' - ' + track;
 

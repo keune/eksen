@@ -3,7 +3,7 @@ var keuneksen = {
     elCss: '#player',
     startupVolume: 70,
     nowPlaying: {
-        url: 'http://radioeksen.com/umbraco/surface/Player/EksenPlayerSong',
+        url: 'https://radioeksen.com/umbraco/surface/Player/EksenPlayerSong',
         defaultMessages: ['RADYO EKSEN -', 'REKLAM', 'REKLAM-REKLAM'],
         interval: 4000
     },
@@ -29,7 +29,7 @@ $(function() {
             $el.jPlayer("clearMedia");
         },
         error: function(event) {
-            if(ready && event.jPlayer.error.type === $.jPlayer.error.URL_NOT_SET) {
+            if (ready && event.jPlayer.error.type === $.jPlayer.error.URL_NOT_SET) {
                 $el.jPlayer('setMedia', keuneksen.stream).jPlayer('play');
             }
         },
@@ -59,7 +59,7 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
             data.volume = msg.volume;
         } else {
             var startupVolume = keuneksen.startupVolume;
-            if(data.volume) {
+            if (data.volume) {
                 startupVolume = data.volume;
             }
             keuneksen.el.jPlayer('volume', (startupVolume / 100));
@@ -91,10 +91,15 @@ chrome.extension.onMessage.addListener(function(msg, _, sendResponse) {
         timeout: keuneksen.nowPlaying.interval,
         dataType: 'json',
         success: function(response) {
-            if(response && response.NowPlayingArtist && response.NowPlayingTrack && response.NowPlayingArtist !== 'Radio Eksen') {
+            if (response && response.NowPlayingArtist && response.NowPlayingArtist !== 'Radio Eksen') {
                 var artist = response.NowPlayingArtist;
-                artist = capitalizeFirst(artist.trim());
                 var track = response.NowPlayingTrack;
+                if (!track && artist.indexOf(' - ') > -1) {
+                    var artistAndTrack = artist.split(' - ');
+                    artist = artistAndTrack[0];
+                    track = artistAndTrack[1];
+                }
+                artist = capitalizeFirst(artist.trim());
                 track = capitalizeFirst(track.trim());
                 var txt = artist + ' - ' + track;
 

@@ -4,7 +4,7 @@
   "name": "Radyo Eksen",
   "short_name": "Radyo Eksen",
   "description": "Başka bir program ya da yeni bir sekme açmadan tek tıkla Radyo Eksen dinle.",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "icons": {
     "16": "icon_16.png",
     "48": "icon_48.png",

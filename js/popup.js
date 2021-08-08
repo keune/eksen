@@ -40,7 +40,7 @@ function bindEvents() {
     sendMessage(msg);
   });
 
-  popup.$volumeInp.change(function() {
+  popup.$volumeInp.on('change input', function() {
     var vol = $(this).val();
     var msg = {type: 'set', volume: vol};
     sendMessage(msg);
